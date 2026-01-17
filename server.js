@@ -79,6 +79,19 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+// Serve React build
+app.use(express.static(path.join(__dirname, "build")));
+
+// Handle React routing
+app.get("*", (req, res) => {
+  if (req.path.startsWith("/api")) {
+    return res
+      .status(404)
+      .json({ success: false, message: "API route not found" });
+  }
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
+
 // 404 handler
 app.use((req, res) => {
   res.status(404).json({
